@@ -1,5 +1,8 @@
-#include <stdio.h>
-#include <cstdlib>
+
+// clang++ --std=c++11 erg.cpp -o bin/erg && bin/erg
+
+#include <stdlib.h> // malloc and friendds
+#include <stdio.h>  // printf 
 
 // Generic enum generation and string mapping function.
 // http://stackoverflow.com/questions/147267/easy-way-to-use-variables-of-enum-types-as-string-in-c
@@ -10,6 +13,8 @@
 
 enum TokenType {
     TOKEN_UNKNOWN,
+
+    TOKEN_WHITESPACE,
 
     TOKEN_NUMBER,
 
@@ -23,6 +28,10 @@ void PrintTokenType(TokenType type) {
     switch(type) {
         case TOKEN_UNKNOWN:
             printf("TOKEN_UNKNOWN");
+            return;
+
+        case TOKEN_WHITESPACE:
+            printf("TOKEN_WHITESPACE");
             return;
 
         case TOKEN_NUMBER:
@@ -51,19 +60,27 @@ struct Token {
     TokenType Type;
 };
 
+// TODO create macro for creation of arrays for given types which have the EnsureTokenArraySize() or Ensure***ArraySize() 
 struct TokenArray {
     int    Length;
     int    Capacity;
     Token *Tokens;
 };
 
+
+// TODO cleanup
+// TODO extra checks
 void EnsureTokenArraySize(TokenArray *array) {
-    if (array->Length == array->Capacity) {
+    if (array->Length >= array->Capacity) {
         auto currentCapacity = array->Capacity;
-        auto newCapacity = array->Capacity * 2;
-        
+        auto newCapacity     = array->Capacity * 2;
+
+        array->Tokens = (Token*)realloc(array->Tokens, sizeof(Token) * newCapacity);
+
+        array->Capacity = newCapacity;
     }
 }
+
 
 // TODO 
 TokenArray *lex(char *code) {
@@ -74,15 +91,22 @@ TokenArray *lex(char *code) {
 
     char *c = code;
     int  index = 0;
+
     // TODO check and re-adjust capacity
     // TODO track lines and columns and index and length?
     while (*c != '\0') {
         // DEBUGGING:
         // printf("%c", *c);
 
+        EnsureTokenArraySize(result);
+
         result->Tokens[index].Type = TOKEN_UNKNOWN;
 
         switch(*c) {
+            case ' ':
+                result->Tokens[index].Type = TOKEN_WHITESPACE;
+                break;
+
             case '0':
             case '1':
             case '2':
@@ -94,23 +118,23 @@ TokenArray *lex(char *code) {
             case '8':
             case '9':
                 result->Tokens[index].Type = TOKEN_NUMBER;
-                goto done;
+
+                break;
             
             case '+':
                 result->Tokens[index].Type = TOKEN_OPERATOR_ADD;
-                goto done;
+                break;
             case '-':
                 result->Tokens[index].Type = TOKEN_OPERATOR_SUBTRACT;
-                goto done;
+                break;
             case '*':
                 result->Tokens[index].Type = TOKEN_OPERATOR_MULTIPLY;
-                goto done;
+                break;
             case '/':
                 result->Tokens[index].Type = TOKEN_OPERATOR_DIVIDE;
-                goto done;
+                break;
         }
 
-    done:
         c++; // Move to next character
         index++;
         result->Length++; // Ensure the length is updated in the array
@@ -130,6 +154,7 @@ int main() {
         printf("\n");
     }
 
+    // Must free tokens then the array containing them.
     free(lexemes->Tokens);
     free(lexemes);
 
