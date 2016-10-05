@@ -1,6 +1,40 @@
 
 // clang++ --std=c++11 erg.cpp -o bin/erg && bin/erg
 
+
+
+
+/*
+    - Lexer
+        x Lex Some More Characters (newlines and tabs)
+        x Line, Column, Index information in token
+        - Create Lexer Test Strings File (not 1.erg etc... remove them)
+        - Lex full numbers
+        - Lex Strings
+        - Lex decimal numbers?
+        - Comments
+            - Single Line Comments (# or //?)
+            - Nested Comments
+        - Length of
+            - Number Literals
+            - String Literals
+            - Identifiers
+            - etc
+        - Lexer Dump File (.lex)
+
+    - Parser
+        - Create AST Node
+
+    - Performance
+        - Optimize data structure alignment
+    
+    - Other
+        - Create way to generate enum and string value mapping or function
+          to return a string representation of the enum to avoid duplication
+
+ */
+
+
 #include <stdlib.h> // malloc and friendds
 #include <stdio.h>  // printf 
 
@@ -15,6 +49,7 @@ enum TokenType {
     TOKEN_UNKNOWN,
 
     TOKEN_WHITESPACE,
+    TOKEN_NEWLINE,
 
     TOKEN_NUMBER,
 
@@ -33,6 +68,10 @@ void PrintTokenType(TokenType type) {
         case TOKEN_WHITESPACE:
             printf("TOKEN_WHITESPACE");
             return;
+        case TOKEN_NEWLINE:
+            printf("TOKEN_NEWLINE");
+            return;
+            
 
         case TOKEN_NUMBER:
             printf("TOKEN_NUMBER");
@@ -56,14 +95,30 @@ void PrintTokenType(TokenType type) {
 }
 
 
+
 struct Token {
     TokenType Type;
+
+    // Location Metadata
+    int Index;
+    int Line;
+    int Column;
+    int Length;
 };
+
+
+void PrintToken(Token * token) {
+    printf("(L%d:C%d:Len%d) > ",  token->Line, token->Column, token->Length);
+
+    PrintTokenType(token->Type);
+}
+
 
 // TODO create macro for creation of arrays for given types which have the EnsureTokenArraySize() or Ensure***ArraySize() 
 struct TokenArray {
     int    Length;
     int    Capacity;
+
     Token *Tokens;
 };
 
@@ -90,7 +145,10 @@ TokenArray *lex(char *code) {
     result->Tokens = (Token*)malloc(sizeof(Token) * 4);
 
     char *c = code;
-    int  index = 0;
+// TODO FIX THIS NEXT LINES ISSUES ITS UNCLEAR ETC
+    int  index = 0; // TODO THIS IS USED FOR INDEX INTO TOKENS AND OTHHER THINGS FIX THIS!!!!!!
+    int  line = 1;
+    int  column = 1;
 
     // TODO check and re-adjust capacity
     // TODO track lines and columns and index and length?
@@ -100,11 +158,62 @@ TokenArray *lex(char *code) {
 
         EnsureTokenArraySize(result);
 
-        result->Tokens[index].Type = TOKEN_UNKNOWN;
+        auto token = &result->Tokens[index];
+
+        token->Type   = TOKEN_UNKNOWN;
+        token->Index  = index;
+        token->Line   = line;
+        token->Column = column;
+        token->Length = 1;
 
         switch(*c) {
+            // Newline Information
+            // - Windows \n\r
+            // - Max:    \r
+            // - Linux   \n
+            // Approach:
+            //  if \n comes with an \r after it normalize to just \n
+            //  if \r is present the replace it with an \n
+            // i.e. normalize to a single \n for all code sources.
+            case '\n':
+            case '\r':
+                token->Type = TOKEN_NEWLINE;
+                
+                // Handle Mac \r, just continue
+                if (*c == '\r') {
+                    line++;
+                    column = 1;
+                    break;
+                }
+
+                // Handle Windows \n\r combination, skip additional character.
+                // TODO the \0 check is redundant? must be zero terminated anyway???
+                //  so can I just safely remove it?... I don't see why not? leave till
+                //  clearer brain available :o)
+                if (*c == '\n' && *(c + 1) != '\0' && *(c + 1) == '\r') {
+                    line++;
+                    column = 1;
+                    token->Length = 2;
+                    c++; // skip the \r characer
+
+                    break;
+                }
+
+                // Handle Linux \n
+                if (*c == '\n') {
+                    line++;
+                    column = 1;
+                    break;
+                }
+
+                // NOTE this ought be impossible... But if ever a regression
+                //  happens then this will hopefully make it clear it happened :o)
+                token->Type = TOKEN_UNKNOWN;
+                break;
+                
             case ' ':
-                result->Tokens[index].Type = TOKEN_WHITESPACE;
+            case '\t':
+                token->Type = TOKEN_WHITESPACE;
                 break;
 
             case '0':
@@ -117,26 +226,53 @@ TokenArray *lex(char *code) {
             case '7':
             case '8':
             case '9':
-                result->Tokens[index].Type = TOKEN_NUMBER;
+                token->Type = TOKEN_NUMBER;
+                
+                // UPTO THIS
+                // do {
+                //     c++;
+
+                //     switch(*c) {
+                //         case '0':
+                //         case '1':
+                //         case '2':
+                //         case '3':
+                //         case '4':
+                //         case '5':
+                //         case '6':
+                //         case '7':
+                //         case '8':
+                //         case '9':
+                //             column++;
+                //         default:
+                //             c--; // move back as this character is not part of the numer
+                //             break;
+                //     }
+                // } while(*c != '\0');
 
                 break;
-            
             case '+':
-                result->Tokens[index].Type = TOKEN_OPERATOR_ADD;
+                token->Type = TOKEN_OPERATOR_ADD;
                 break;
             case '-':
-                result->Tokens[index].Type = TOKEN_OPERATOR_SUBTRACT;
+                token->Type = TOKEN_OPERATOR_SUBTRACT;
                 break;
             case '*':
-                result->Tokens[index].Type = TOKEN_OPERATOR_MULTIPLY;
+                token->Type = TOKEN_OPERATOR_MULTIPLY;
                 break;
             case '/':
-                result->Tokens[index].Type = TOKEN_OPERATOR_DIVIDE;
+                token->Type = TOKEN_OPERATOR_DIVIDE;
                 break;
         }
 
+        // Set Token Location Information
+
+        // Move everything ready for next token
+        // TODO this is the same as the newline handling windows newline section!!!
+        column++;
         c++; // Move to next character
         index++;
+        // TODO: why not just figure this out from the index at the end?
         result->Length++; // Ensure the length is updated in the array
     }
 
@@ -147,10 +283,14 @@ TokenArray *lex(char *code) {
 int main() {
     printf("Erg Compiler v0.0.1 (c) 2016 Justin Wishart\n");
 
-    auto lexemes = lex((char *)"1 - 15 * -12");
+    auto lexemes = lex((char *)"1 + 12");
+    // NEWLINES auto lexemes = lex((char *)"1 \n\r \t 2 \n 3 \r\r 4 \n\n 5 \r\r");
+
+    printf("\n");
 
     for (auto i = 0; i < lexemes->Length; i++) {
-        PrintTokenType(lexemes->Tokens[i].Type);
+        PrintToken(&lexemes->Tokens[i]);
+        
         printf("\n");
     }
 
