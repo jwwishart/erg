@@ -1,0 +1,3 @@
+// This tests the newline handling. Normalize to \n essentially (1 character)
+// well the lexer at least only puts out one token...
+1 \n\r \t 2 \n 3 \r\r 4 \n\n 5 \r\r
