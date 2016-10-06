@@ -48,22 +48,16 @@
             - should show success/failure for parsing
             - should allow access to bytecode etc
             - EVERYTHING that a test would need to verify behaviour 
+        - All errors and warning ought to have numbers
+            - W1003 - your not using a variable
+            - E0001 - symbol not found
+        - Should destinguish between lexical and parsing errors?
 
     - Other
         - Get rid of the debugging output behind a flag instead of compile time
           directive... dump to files in another directory to keep the output 
           nice and clean!
-        - Testing mechanims
-            - tests folder includes bunch of files all parsed and compared with
-              an expected output file (json maybe?) containing meta about
-              the expected results of the parsing of the file(compilation)
-            - need to have compiler flag --run-compiler-tests
-            - essentially system tests that run to test compilation of certain
-              structures of code: empty file, simple expressions(?) etc... should
-              be verifiable somehow??? maybe the compiler needs to output a json
-              file containing tokens, ast etc? errors, warnings and ought to be
-              able to say: this should warn, so find a warning of type W1424 which is
-              a warning that "bla" which should show with this sort of code... etc...
+
         - Shell scripts to build_debug and build_release... should execute
           required clang commandlines with the required -D DEBUG symbol for 
           debug, as well as including other optimizations etc...
