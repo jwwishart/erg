@@ -1,8 +1,12 @@
 
+// RELEASE:
+// TODO optimizations etc all turned on
+// clang++ --std=c++11 erg.cpp -o bin/erg
 // clang++ --std=c++11 erg.cpp -o bin/erg && bin/erg
 
-
-
+// DEBUG:
+// clang++ --std=c++11 -g -D DEBUG erg.cpp -o bin/erg
+// clang++ --std=c++11 -g -D DEBUG erg.cpp -o bin/erg && bin/erg
 
 /*
     - Lexer
@@ -29,14 +33,50 @@
         - Optimize data structure alignment
     
     - Other
+        - Get rid of the debugging output behind a flag instead of compile time
+          directive... dump to files in another directory to keep the output 
+          nice and clean!
+        - Testing mechanims
+            - tests folder includes bunch of files all parsed and compared with
+              an expected output file (json maybe?) containing meta about
+              the expected results of the parsing of the file(compilation)
+            - need to have compiler flag --run-compiler-tests
+            - essentially system tests that run to test compilation of certain
+              structures of code: empty file, simple expressions(?) etc... should
+              be verifiable somehow??? maybe the compiler needs to output a json
+              file containing tokens, ast etc? errors, warnings and ought to be
+              able to say: this should warn, so find a warning of type W1424 which is
+              a warning that "bla" which should show with this sort of code... etc...
+        - Shell scripts to build_debug and build_release... should execute
+          required clang commandlines with the required -D DEBUG symbol for 
+          debug, as well as including other optimizations etc...
+          
+          Maybe we should have the following scripts
+          - debug - builds and executes GDB, all additional arguments are forwarded
+            to the executable
+          - build - builds. Can take debug|release as argument, default is debug
+            all additional arguments are passed to the executable
+          - run   - builds in debug mode and executes,
+            all additional arguments are passed to the executable
+          - test  - runs compiler tests (build in debug and --run-compiler-tests
+            passed to the compiler
+
         - Create way to generate enum and string value mapping or function
           to return a string representation of the enum to avoid duplication
 
  */
 
+// TODO remove below stuff?
+// WARNING use "-D DEBUG" argument to clang++ instead of below... 
+//#define DEBUG
 
 #include <stdlib.h> // malloc and friendds
-#include <stdio.h>  // printf 
+#include <stdio.h>  // printf
+#include "compiler_arguments.h"
+
+#ifdef DEBUG 
+    #include "compiler_debug.h"
+#endif
 
 // Generic enum generation and string mapping function.
 // http://stackoverflow.com/questions/147267/easy-way-to-use-variables-of-enum-types-as-string-in-c
@@ -279,13 +319,20 @@ TokenArray *lex(char *code) {
     return result;
 }
 
+int main(int argc, char *argv[]) {
+    // Parse Arguments
+    CompilerArgumentFlags flags;
+    parseFlags(argc, argv, &flags);
 
-int main() {
-    printf("Erg Compiler v0.0.1 (c) 2016 Justin Wishart\n");
+    if (!flags.enableSilentMode) {
+        printf("Erg Compiler v0.0.1 (c) 2016 Justin Wishart\n");
+    }
 
     auto lexemes = lex((char *)"1 + 12");
     // NEWLINES auto lexemes = lex((char *)"1 \n\r \t 2 \n 3 \r\r 4 \n\n 5 \r\r");
 
+#ifdef DEBUG 
+    printf("*** Compiler Debugging Enabled ***");
     printf("\n");
 
     for (auto i = 0; i < lexemes->Length; i++) {
@@ -293,11 +340,12 @@ int main() {
         
         printf("\n");
     }
+#endif
 
     // Must free tokens then the array containing them.
     free(lexemes->Tokens);
     free(lexemes);
 
-    printf("\n");
+    //printf("\n");
 }
 
