@@ -9,6 +9,7 @@
 // clang++ --std=c++11 -g -D DEBUG erg.cpp -o bin/erg && bin/erg
 
 /*
+
     - Lexer
         x Lex Some More Characters (newlines and tabs)
         x Line, Column, Index information in token
@@ -32,6 +33,22 @@
     - Performance
         - Optimize data structure alignment
     
+    - Testing Framework
+        - Tests should be in code
+        - Code to run through the compiler ought to be stored in files not 
+          in the c++ code as strings etc.
+        - Should provide an easy way to load the appropriate test by use of
+          the number only
+        - The Code should verify the results
+        - The compiler results ought to be appropriately structured so that
+          a test could analyse the result object to find
+            - errors
+            - warnings
+            - anomolies in tokens, or ast that it is expecting to find et
+            - should show success/failure for parsing
+            - should allow access to bytecode etc
+            - EVERYTHING that a test would need to verify behaviour 
+
     - Other
         - Get rid of the debugging output behind a flag instead of compile time
           directive... dump to files in another directory to keep the output 
