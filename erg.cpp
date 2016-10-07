@@ -1,8 +1,24 @@
+// Copyright (c) 2016 Justin William Wishart
+// Full Licence is found in the LICENSE.txt file
+
+
+
+
+
+
+// TODO move all this documentation out into /doc folder and reference
+//  in the README.md file
 
 // RELEASE:
 // TODO optimizations etc all turned on
 // clang++ --std=c++11 erg.cpp -o bin/erg
 // clang++ --std=c++11 erg.cpp -o bin/erg && bin/erg
+//
+// Release Debug Flags (see os.h);
+//  - OS_NIX - compile for *nix operating systems
+//  - OS_WIN - compile for Windows operating systems
+//  - OS_MAC - compile for Mac OS X operating systems
+
 
 // DEBUG:
 // clang++ --std=c++11 -g -D DEBUG erg.cpp -o bin/erg
@@ -54,6 +70,11 @@
         - Should destinguish between lexical and parsing errors?
 
     - Other
+        - Determine OS at compile time? set OS_NIX, OS_WIN, OS_MAX or others
+          appropriate to the platform being compiled for (or is that a bad idea?)
+
+        - Coding Guidelines (choose a style)
+
         - Get rid of the debugging output behind a flag instead of compile time
           directive... dump to files in another directory to keep the output 
           nice and clean!
@@ -80,6 +101,8 @@
 // TODO remove below stuff?
 // WARNING use "-D DEBUG" argument to clang++ instead of below... 
 //#define DEBUG
+
+#include "os.h"
 
 #include <stdlib.h> // malloc and friendds
 #include <stdio.h>  // printf

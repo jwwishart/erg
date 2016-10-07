@@ -1,3 +1,5 @@
+// Copyright (c) 2016 Justin William Wishart
+// Full Licence is found in the LICENSE.txt file
 
 // NOTE where a flag has a ? to the left of it that means it is not implemented
 // yet or is being considered for inclusion in the flags

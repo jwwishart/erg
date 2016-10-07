@@ -1,1 +1,1 @@
-# erg
+erg language written using clang c++ compiler
