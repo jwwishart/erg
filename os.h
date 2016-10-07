@@ -13,8 +13,15 @@
 
 /*
     Documentation:
-    PATH_MAX - https://www.gnu.org/software/libc/manual/html_node/Limits-for-Files.html
-    getcwd() - https://www.gnu.org/software/libc/manual/html_node/Working-Directory.html
+        OS Indicator Defines
+            https://sourceforge.net/p/predef/wiki/OperatingSystems/
+
+        PATH_MAX
+            https://www.gnu.org/software/libc/manual/html_node/Limits-for-Files.html
+            
+        getcwd()
+            https://www.gnu.org/software/libc/manual/html_node/Working-Directory.html
+
 */
 
  
