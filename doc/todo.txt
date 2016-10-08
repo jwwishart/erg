@@ -1,0 +1,77 @@
+Copyright (c) 2016 Justin William Wishart
+Full License is found in the LICENSE.txt file
+
+
+- Lexer
+    x Lex Some More Characters (newlines and tabs)
+    x Line, Column, Index information in token
+    - Create Lexer Test Strings File (not 1.erg etc... remove them)
+    - Lex full numbers
+    - Lex Strings
+    - Lex decimal numbers?
+    - Comments
+        - Single Line Comments (# or //?)
+        - Nested Comments
+    - Length of
+        - Number Literals
+        - String Literals
+        - Identifiers
+        - etc
+    - Lexer Dump File (.lex)
+
+- Parser
+    - Create AST Node
+
+- Performance
+    - Optimize data structure alignment
+
+- Testing Framework
+    - Tests should be in code
+    - Code to run through the compiler ought to be stored in files not 
+        in the c++ code as strings etc.
+    - Should provide an easy way to load the appropriate test by use of
+        the number only
+    - The Code should verify the results
+    - The compiler results ought to be appropriately structured so that
+        a test could analyse the result object to find
+        - errors
+        - warnings
+        - anomolies in tokens, or ast that it is expecting to find et
+        - should show success/failure for parsing
+        - should allow access to bytecode etc
+        - EVERYTHING that a test would need to verify behaviour 
+    - All errors and warning ought to have numbers
+        - W1003 - your not using a variable
+        - E0001 - symbol not found
+    - Should destinguish between lexical and parsing errors?
+
+- Other
+    - Determine OS at compile time? set OS_NIX, OS_WIN, OS_MAX or others
+        appropriate to the platform being compiled for (or is that a bad idea?)
+
+    - Coding Guidelines (choose a style)
+
+    - Get rid of the debugging output behind a flag instead of compile time
+        directive... dump to files in another directory to keep the output 
+        nice and clean!
+
+    - Shell scripts to build_debug and build_release... should execute
+        required clang commandlines with the required -D DEBUG symbol for 
+        debug, as well as including other optimizations etc...
+        
+        Maybe we should have the following scripts
+        - debug - builds and executes GDB, all additional arguments are forwarded
+        to the executable
+        - build - builds. Can take debug|release as argument, default is debug
+        all additional arguments are passed to the executable
+        - run   - builds in debug mode and executes,
+        all additional arguments are passed to the executable
+        - test  - runs compiler tests (build in debug and --run-compiler-tests
+        passed to the compiler
+
+    - Create way to generate enum and string value mapping or function
+        to return a string representation of the enum to avoid duplication
+        
+        Generic enum generation and string mapping function.
+        http://stackoverflow.com/questions/147267/easy-way-to-use-variables-of-enum-types-as-string-in-c
+

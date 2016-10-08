@@ -1,0 +1,21 @@
+Copyright (c) 2016 Justin William Wishart
+Full License is found in the LICENSE.txt file
+
+
+Release -------------------------------
+
+TODO optimizations etc all turned on
+
+clang++ --std=c++14 erg.cpp -o bin/erg
+clang++ --std=c++14 erg.cpp -o bin/erg && bin/erg
+
+Release Debug Flags (see os.h);
+- OS_NIX - compile for *nix operating systems
+- OS_WIN - compile for Windows operating systems
+- OS_MAC - compile for Mac OS X operating systems
+
+
+Debug ---------------------------------
+
+clang++ --std=c++14 -g -D DEBUG erg.cpp -o bin/erg
+clang++ --std=c++14 -g -D DEBUG erg.cpp -o bin/erg && bin/erg

@@ -1,217 +1,18 @@
 // Copyright (c) 2016 Justin William Wishart
-// Full Licence is found in the LICENSE.txt file
-
-
-
-
-
-
-// TODO move all this documentation out into /doc folder and reference
-//  in the README.md file
-
-// RELEASE:
-// TODO optimizations etc all turned on
-// clang++ --std=c++11 erg.cpp -o bin/erg
-// clang++ --std=c++11 erg.cpp -o bin/erg && bin/erg
-//
-// Release Debug Flags (see os.h);
-//  - OS_NIX - compile for *nix operating systems
-//  - OS_WIN - compile for Windows operating systems
-//  - OS_MAC - compile for Mac OS X operating systems
-
-
-// DEBUG:
-// clang++ --std=c++11 -g -D DEBUG erg.cpp -o bin/erg
-// clang++ --std=c++11 -g -D DEBUG erg.cpp -o bin/erg && bin/erg
-
-/*
-
-    - Lexer
-        x Lex Some More Characters (newlines and tabs)
-        x Line, Column, Index information in token
-        - Create Lexer Test Strings File (not 1.erg etc... remove them)
-        - Lex full numbers
-        - Lex Strings
-        - Lex decimal numbers?
-        - Comments
-            - Single Line Comments (# or //?)
-            - Nested Comments
-        - Length of
-            - Number Literals
-            - String Literals
-            - Identifiers
-            - etc
-        - Lexer Dump File (.lex)
-
-    - Parser
-        - Create AST Node
-
-    - Performance
-        - Optimize data structure alignment
-    
-    - Testing Framework
-        - Tests should be in code
-        - Code to run through the compiler ought to be stored in files not 
-          in the c++ code as strings etc.
-        - Should provide an easy way to load the appropriate test by use of
-          the number only
-        - The Code should verify the results
-        - The compiler results ought to be appropriately structured so that
-          a test could analyse the result object to find
-            - errors
-            - warnings
-            - anomolies in tokens, or ast that it is expecting to find et
-            - should show success/failure for parsing
-            - should allow access to bytecode etc
-            - EVERYTHING that a test would need to verify behaviour 
-        - All errors and warning ought to have numbers
-            - W1003 - your not using a variable
-            - E0001 - symbol not found
-        - Should destinguish between lexical and parsing errors?
-
-    - Other
-        - Determine OS at compile time? set OS_NIX, OS_WIN, OS_MAX or others
-          appropriate to the platform being compiled for (or is that a bad idea?)
-
-        - Coding Guidelines (choose a style)
-
-        - Get rid of the debugging output behind a flag instead of compile time
-          directive... dump to files in another directory to keep the output 
-          nice and clean!
-
-        - Shell scripts to build_debug and build_release... should execute
-          required clang commandlines with the required -D DEBUG symbol for 
-          debug, as well as including other optimizations etc...
-          
-          Maybe we should have the following scripts
-          - debug - builds and executes GDB, all additional arguments are forwarded
-            to the executable
-          - build - builds. Can take debug|release as argument, default is debug
-            all additional arguments are passed to the executable
-          - run   - builds in debug mode and executes,
-            all additional arguments are passed to the executable
-          - test  - runs compiler tests (build in debug and --run-compiler-tests
-            passed to the compiler
-
-        - Create way to generate enum and string value mapping or function
-          to return a string representation of the enum to avoid duplication
-
- */
-
-// TODO remove below stuff?
-// WARNING use "-D DEBUG" argument to clang++ instead of below... 
-//#define DEBUG
+// Full License is found in the LICENSE.txt file
 
 #include "os.h"
-
-#include <stdlib.h> // malloc and friendds
-#include <stdio.h>  // printf
+#include "erg.h"
 #include "compiler_arguments.h"
 
 #ifdef DEBUG 
     #include "compiler_debug.h"
 #endif
 
-// Generic enum generation and string mapping function.
-// http://stackoverflow.com/questions/147267/easy-way-to-use-variables-of-enum-types-as-string-in-c
+
+#include <stdio.h>  // printf
 
 
-// TODO in case I need to change for something like a unicode string? 
-//typedef char* string;
-
-enum TokenType {
-    TOKEN_UNKNOWN,
-
-    TOKEN_WHITESPACE,
-    TOKEN_NEWLINE,
-
-    TOKEN_NUMBER,
-
-    TOKEN_OPERATOR_ADD,
-    TOKEN_OPERATOR_SUBTRACT,
-    TOKEN_OPERATOR_MULTIPLY,
-    TOKEN_OPERATOR_DIVIDE,
-};
-
-void PrintTokenType(TokenType type) {
-    switch(type) {
-        case TOKEN_UNKNOWN:
-            printf("TOKEN_UNKNOWN");
-            return;
-
-        case TOKEN_WHITESPACE:
-            printf("TOKEN_WHITESPACE");
-            return;
-        case TOKEN_NEWLINE:
-            printf("TOKEN_NEWLINE");
-            return;
-            
-
-        case TOKEN_NUMBER:
-            printf("TOKEN_NUMBER");
-            return;
-
-        case TOKEN_OPERATOR_ADD:
-            printf("TOKEN_OPERATOR_ADD");
-            return;
-        case TOKEN_OPERATOR_SUBTRACT:
-            printf("TOKEN_OPERATOR_SUBTRACT");
-            return;
-        case TOKEN_OPERATOR_MULTIPLY:
-            printf("TOKEN_OPERATOR_MULTIPLY");
-            return;
-        case TOKEN_OPERATOR_DIVIDE:
-            printf("TOKEN_OPERATOR_DIVIDE");
-            return;
-    }
-
-    printf("*** Unsupported Token Type given to PrintTokenType() ***");
-}
-
-
-
-struct Token {
-    TokenType Type;
-
-    // Location Metadata
-    int Index;
-    int Line;
-    int Column;
-    int Length;
-};
-
-
-void PrintToken(Token * token) {
-    printf("(L%d:C%d:Len%d) > ",  token->Line, token->Column, token->Length);
-
-    PrintTokenType(token->Type);
-}
-
-
-// TODO create macro for creation of arrays for given types which have the EnsureTokenArraySize() or Ensure***ArraySize() 
-struct TokenArray {
-    int    Length;
-    int    Capacity;
-
-    Token *Tokens;
-};
-
-
-// TODO cleanup
-// TODO extra checks
-void EnsureTokenArraySize(TokenArray *array) {
-    if (array->Length >= array->Capacity) {
-        auto currentCapacity = array->Capacity;
-        auto newCapacity     = array->Capacity * 2;
-
-        array->Tokens = (Token*)realloc(array->Tokens, sizeof(Token) * newCapacity);
-
-        array->Capacity = newCapacity;
-    }
-}
-
-
-// TODO 
 TokenArray *lex(char *code) {
     auto result = (TokenArray *)malloc(sizeof(TokenArray));
     result->Length   = 0;
@@ -230,7 +31,7 @@ TokenArray *lex(char *code) {
         // DEBUGGING:
         // printf("%c", *c);
 
-        EnsureTokenArraySize(result);
+        ensure_token_array_size(result);
 
         auto token = &result->Tokens[index];
 
@@ -310,6 +111,7 @@ TokenArray *lex(char *code) {
                 //         case '0':
                 //         case '1':
                 //         case '2':
+    //printf("\n");
                 //         case '3':
                 //         case '4':
                 //         case '5':
@@ -356,8 +158,9 @@ TokenArray *lex(char *code) {
 int main(int argc, char *argv[]) {
     // Parse Arguments
     CompilerArgumentFlags flags;
-    parseFlags(argc, argv, &flags);
+    parse_flags(argc, argv, &flags);
 
+    // Welcome Message
     if (!flags.enableSilentMode) {
         printf("Erg Compiler v0.0.1 (c) 2016 Justin Wishart\n");
     }
@@ -365,21 +168,17 @@ int main(int argc, char *argv[]) {
     auto lexemes = lex((char *)"1 + 12");
     // NEWLINES auto lexemes = lex((char *)"1 \n\r \t 2 \n 3 \r\r 4 \n\n 5 \r\r");
 
+// TODO should just put all this into a single function which just returns... I will
+// do this when I dump more things I think
 #ifdef DEBUG 
     printf("*** Compiler Debugging Enabled ***");
     printf("\n");
 
-    for (auto i = 0; i < lexemes->Length; i++) {
-        PrintToken(&lexemes->Tokens[i]);
-        
-        printf("\n");
-    }
+    print_token_array(lexemes);
 #endif
 
     // Must free tokens then the array containing them.
     free(lexemes->Tokens);
     free(lexemes);
-
-    //printf("\n");
 }
 

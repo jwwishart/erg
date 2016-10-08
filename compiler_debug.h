@@ -1,4 +1,58 @@
 // Copyright (c) 2016 Justin William Wishart
-// Full Licence is found in the LICENSE.txt file
+// Full License is found in the LICENSE.txt file
 
-// This file will have compiler debugging related code
+#include <stdio.h>  // printf
+
+
+void print_token_type(TokenType type) 
+{
+    switch(type) {
+        case TOKEN_UNKNOWN:
+            printf("TOKEN_UNKNOWN");
+            return;
+
+        case TOKEN_WHITESPACE:
+            printf("TOKEN_WHITESPACE");
+            return;
+        case TOKEN_NEWLINE:
+            printf("TOKEN_NEWLINE");
+            return;
+            
+
+        case TOKEN_NUMBER:
+            printf("TOKEN_NUMBER");
+            return;
+
+        case TOKEN_OPERATOR_ADD:
+            printf("TOKEN_OPERATOR_ADD");
+            return;
+        case TOKEN_OPERATOR_SUBTRACT:
+            printf("TOKEN_OPERATOR_SUBTRACT");
+            return;
+        case TOKEN_OPERATOR_MULTIPLY:
+            printf("TOKEN_OPERATOR_MULTIPLY");
+            return;
+        case TOKEN_OPERATOR_DIVIDE:
+            printf("TOKEN_OPERATOR_DIVIDE");
+            return;
+    }
+
+    printf("*** Unsupported Token Type given to print_token_type() ***");
+}
+
+
+void print_token(Token * token) 
+{
+    printf("(L%d:C%d:Len%d) > ",  token->Line, token->Column, token->Length);
+
+    print_token_type(token->Type);
+}
+
+void print_token_array(TokenArray * array) 
+{
+    for (auto i = 0; i < array->Length; i++) {
+        print_token(&array->Tokens[i]);
+        
+        printf("\n");
+    }
+}

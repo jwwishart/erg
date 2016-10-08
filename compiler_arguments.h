@@ -1,5 +1,5 @@
 // Copyright (c) 2016 Justin William Wishart
-// Full Licence is found in the LICENSE.txt file
+// Full License is found in the LICENSE.txt file
 
 // NOTE where a flag has a ? to the left of it that means it is not implemented
 // yet or is being considered for inclusion in the flags
@@ -32,7 +32,7 @@ struct CompilerArgumentFlags {
 
 
 
-static bool isFlagSet(int argc, char *argv[], const char *flagString) {
+static bool is_flag_set(int argc, char *argv[], const char *flagString) {
     for (auto i = 0; i < argc; i++) {
         auto a = argv[i];
         auto f = flagString;
@@ -51,13 +51,13 @@ static bool isFlagSet(int argc, char *argv[], const char *flagString) {
 
 // Parses the arguments and fills in the supplied argument flags object appropriately
 // it will also set defaults
-void parseFlags(int argc, char *argv[], CompilerArgumentFlags* flags) {
+void parse_flags(int argc, char *argv[], CompilerArgumentFlags* flags) {
     // Set Defaults: Anything that is true by default needs to be set.
 
     // Parse arguments and extract flag only options
-    flags->enableSilentMode = isFlagSet(argc, argv, "-q");
+    flags->enableSilentMode = is_flag_set(argc, argv, "-q");
 
     #ifdef DEBUG
-    flags->runCompilerTests = isFlagSet(argc, argv, "--run-compiler-tests");
+    flags->runCompilerTests = is_flag_set(argc, argv, "--run-compiler-tests");
     #endif
 }
