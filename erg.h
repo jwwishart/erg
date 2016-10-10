@@ -46,7 +46,7 @@ struct TokenArray
     Token *Tokens;
 };
 
-
+// TODO call this a string builder sort of pattern...?
 // TODO pull these string thingies out into util.h I think...
 char * allocate_character_array() 
 {
