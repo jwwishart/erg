@@ -4,16 +4,17 @@
 #include "os.h"
 #include "erg.h"
 #include "compiler_arguments.h"
-
 #ifdef DEBUG 
     #include "compiler_debug.h"
 #endif
 
-
 #include <stdio.h>  // printf
+#include <assert.h> // assert
 
 
 TokenArray *lex(char *code) {
+    assert(code != NULL);
+
     auto result = (TokenArray *)malloc(sizeof(TokenArray));
     result->Length   = 0;
     result->Capacity = 4;
@@ -21,7 +22,7 @@ TokenArray *lex(char *code) {
 
     char *c = code;
 // TODO FIX THIS NEXT LINES ISSUES ITS UNCLEAR ETC
-    int  index = 0; // TODO THIS IS USED FOR INDEX INTO TOKENS AND OTHHER THINGS FIX THIS!!!!!!
+    int  tokenIndex = 0; // TODO THIS IS USED FOR INDEX INTO TOKENS AND OTHHER THINGS FIX THIS!!!!!!
     int  line = 1;
     int  column = 1;
 
@@ -33,15 +34,15 @@ TokenArray *lex(char *code) {
 
         ensure_token_array_size(result);
 
-        auto token = &result->Tokens[index];
+        auto token = &result->Tokens[tokenIndex];
 
         token->Type   = TOKEN_UNKNOWN;
-        token->Index  = index;
+        token->Index  = tokenIndex;
         token->Line   = line;
         token->Column = column;
         token->Length = 1;
 
-        switch(*c) {
+        switch (*c) {
             // Newline Information
             // - Windows \n\r
             // - Max:    \r
@@ -52,6 +53,7 @@ TokenArray *lex(char *code) {
             // i.e. normalize to a single \n for all code sources.
             case '\n':
             case '\r':
+            {
                 token->Type = TOKEN_NEWLINE;
                 
                 // Handle Mac \r, just continue
@@ -85,12 +87,13 @@ TokenArray *lex(char *code) {
                 //  happens then this will hopefully make it clear it happened :o)
                 token->Type = TOKEN_UNKNOWN;
                 break;
-                
+            }
             case ' ':
             case '\t':
+            {
                 token->Type = TOKEN_WHITESPACE;
                 break;
-
+            }
             case '0':
             case '1':
             case '2':
@@ -101,32 +104,42 @@ TokenArray *lex(char *code) {
             case '7':
             case '8':
             case '9':
+            {
                 token->Type = TOKEN_NUMBER;
-                
-                // UPTO THIS
-                // do {
-                //     c++;
+                token->Raw = (char *)calloc(16, sizeof(char)); // zero so we can just add numbers...
+                token->Raw[0] = *c;
 
-                //     switch(*c) {
-                //         case '0':
-                //         case '1':
-                //         case '2':
-    //printf("\n");
-                //         case '3':
-                //         case '4':
-                //         case '5':
-                //         case '6':
-                //         case '7':
-                //         case '8':
-                //         case '9':
-                //             column++;
-                //         default:
-                //             c--; // move back as this character is not part of the numer
-                //             break;
-                //     }
-                // } while(*c != '\0');
+                auto index = 1;
+                auto found = false;
+
+                do {
+                    c++; // move past the current character...
+
+                    switch (*c) {
+                        case '0':
+                        case '1':
+                        case '2':
+                        case '3':
+                        case '4':
+                        case '5':
+                        case '6':
+                        case '7':
+                        case '8':
+                        case '9':
+                            token->Raw[index] = *c;
+                            index++;
+
+                            column++;
+                            break;
+                        default:
+                            c--; // move back as this character is not part of the numer
+                            found = true;
+                            break;
+                    }
+                } while(*c != '\0' && !found);
 
                 break;
+            }
             case '+':
                 token->Type = TOKEN_OPERATOR_ADD;
                 break;
@@ -147,9 +160,8 @@ TokenArray *lex(char *code) {
         // TODO this is the same as the newline handling windows newline section!!!
         column++;
         c++; // Move to next character
-        index++;
-        // TODO: why not just figure this out from the index at the end?
-        result->Length++; // Ensure the length is updated in the array
+        tokenIndex++;
+        result->Length = tokenIndex;
     }
 
     return result;
@@ -165,7 +177,7 @@ int main(int argc, char *argv[]) {
         printf("Erg Compiler v0.0.1 (c) 2016 Justin Wishart\n");
     }
 
-    auto lexemes = lex((char *)"1 + 12");
+    auto lexemes = lex((char *)"1 + 22 -456");
     // NEWLINES auto lexemes = lex((char *)"1 \n\r \t 2 \n 3 \r\r 4 \n\n 5 \r\r");
 
 // TODO should just put all this into a single function which just returns... I will

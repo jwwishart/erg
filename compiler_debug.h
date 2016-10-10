@@ -44,8 +44,11 @@ void print_token_type(TokenType type)
 void print_token(Token * token) 
 {
     printf("(L%d:C%d:Len%d) > ",  token->Line, token->Column, token->Length);
-
     print_token_type(token->Type);
+
+    if (token->Type == TOKEN_NUMBER) {
+        printf(" > %s", token->Raw); // Should never be null
+    }
 }
 
 void print_token_array(TokenArray * array) 
@@ -56,3 +59,5 @@ void print_token_array(TokenArray * array)
         printf("\n");
     }
 }
+
+

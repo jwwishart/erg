@@ -7,16 +7,20 @@
 #include <sys/stat.h> // mkdir()
 
 #include "../os.h" // ERG_PATH_MAX, erg_getcwd()
+#include "../erg.h"
 
 int main() {
+    auto str = allocate_character_array();
+    dump_character_array(str);
+    str = append_character_array(str, "Hello World");
+    dump_character_array(str);
+
     // Operating System Defines
     //
     // Linux Mint 
     #ifdef ERG_OS_NIX
         printf("You are compiling this on Linux\n");
     #endif
-
-
 
     // Get the current working directory
     char buffer[ERG_PATH_MAX];
