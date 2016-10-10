@@ -91,7 +91,7 @@ char * append_character_array(char * str, char * append) {
     // TODO reallocate when capacity reached or going over...
 
     // TODO errors
-    strcpy(str + lengthOfAppend, append);
+    strcpy(str + length, append);
 
     length += lengthOfAppend;
 
