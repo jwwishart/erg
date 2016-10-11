@@ -46,62 +46,6 @@ struct TokenArray
     Token *Tokens;
 };
 
-// TODO call this a string builder sort of pattern...?
-// TODO pull these string thingies out into util.h I think...
-char * allocate_character_array() 
-{
-    auto lengthAndCap = sizeof(int) * 2;
-    auto result = (char *)calloc(sizeof(char) * 16 + lengthAndCap, sizeof(char));
-    auto start = result - lengthAndCap;
-
-    auto location = (int *)(start);
-    *location = 0;
-    location = (int *)(start) + 1;
-    *location = 16; 
-
-    return result;
-}
-
-// TODO debug only?
-void dump_character_array(char * str) {
-    auto lengthAndCap = sizeof(int) * 2;
-
-    printf("Value: %s\n", str);
-
-    str -= lengthAndCap;
-
-    printf("Length: %d\n", (*(int *)str));
-    printf("Capacity: %d\n", (*(((int *)str)+1)));
-}
-
-void free_character_array(char * string) {
-    auto lengthAndCap = sizeof(int) * 2;
-    string -= lengthAndCap;
-    free(string);
-}
-
-char * append_character_array(char * str, char * append) {
-    auto lengthAndCap = sizeof(int) * 2;
-    auto lengthOfAppend = strlen(append);
-
-    int capacity = (*(((int *)str)+1));
-    int length   = (*(int *)str);
-
-// UPTO HERE vvv
-    // TODO reallocate when capacity reached or going over...
-
-    // TODO errors
-    strcpy(str + length, append);
-
-    length += lengthOfAppend;
-
-    // Set the new length
-    auto start = str - lengthAndCap;
-    auto location = (int *)(start);
-    *location = length;
-
-    return str;
-}
 
 // TODO cleanup
 // TODO extra checks

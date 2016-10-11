@@ -10,6 +10,7 @@
 #include "../erg.h"
 
 int main() {
+    //
     auto str = allocate_character_array();
     dump_character_array(str);
     str = append_character_array(str, "Hello World");
