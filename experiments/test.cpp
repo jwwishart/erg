@@ -1,12 +1,6 @@
 // Linux: this was written and executed on Linux Mint
 // clang++ --std=c++14 -g test.cpp -o bin/test && bin/test
 
-#include <stdio.h>    // printf()
-#include <unistd.h>   // getcwd()
-#include <limits.h>   // PATH_MAX
-#include <sys/stat.h> // mkdir()
-
-#include "../os.h" // ERG_PATH_MAX, erg_getcwd()
 #include "../erg.h"
 
 int main() {

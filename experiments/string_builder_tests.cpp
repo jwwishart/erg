@@ -3,36 +3,46 @@
 
 // clang++ --std=c++14 -g string_builder_tests.cpp -o bin/string_builder_tests && bin/string_builder_tests
 
-#include <stdio.h>    // printf()
-
-#include "../string_builder.h"
+#include "../erg.h"
 
 int main() {
 
-// UPTO HERE vvv
-// TODO(jwwishart) asserts to verify capacity etc...
-// TODO(jwwishart) function to get length of string
-// TODO(jwwishart) function to get capacity of string (use in other functions)
-// TODO(jwwishart) cleanup the functions.. "location" and other oddities are not 
-//  really easy to read...
-//  - Maybe move stuff to some macros? or something? or maybe NOT!
-// TODO(jwwishart) Final \0 character after string ... allocate extra byte!
-
     // Construct a new empty string builder
     auto str = allocate_string_builder();
-    dump_string_builder(str);
+
+    expect(str != null);
+    expect(get_string_builder_length(str) == 0);
+    expect(get_string_builder_capacity(str) == 16);
 
     // Append within default 16 characters buffer size: no re-allocation
-    str = append_character_array(str, (char *)"Hello World");
-    dump_string_builder(str);
+    auto message_part1 = "Hello World";
+
+    str = append_character_array(str, (char *)message_part1);
+    
+    expect(str != null);
+    expect(get_string_builder_length(str) == strlen(message_part1));
+    expect(get_string_builder_capacity(str) == 16);
 
     // Append to entend capacity
-    str = append_character_array(str, (char *)". This is AMAZING!");
-    dump_string_builder(str);
+    auto message_part2 = ". This is AMAZING!";
+    auto expected_combined_length = strlen(message_part1) + strlen(message_part2);
 
-    // Append but don't extend capacity
-    str = append_character_array(str, (char *)". Reallocate? no!");
-    dump_string_builder(str);
+    str = append_character_array(str, (char *)message_part2);
+    
+    expect(str != null);
+    expect(get_string_builder_length(str) == expected_combined_length);
+    expect(get_string_builder_capacity(str) > expected_combined_length);
+
+    // Append but don't extend capacity!
+    auto current_capacity = get_string_builder_capacity(str);
+    auto message_part3 = ". Reallocate? no!";
+    expected_combined_length += strlen(message_part3);
+
+    str = append_character_array(str, (char *)message_part3);
+    
+    expect(str != null);
+    expect(get_string_builder_length(str) == expected_combined_length);
+    expect(get_string_builder_capacity(str) == current_capacity);
 
     // Printing the reference directly
     printf("String Value Is: %s\n", str);

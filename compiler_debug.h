@@ -1,8 +1,7 @@
 // Copyright (c) 2016 Justin William Wishart
 // Full License is found in the LICENSE.txt file
 
-#include <stdio.h>  // printf
-
+#ifdef DEBUG
 
 void print_token_type(TokenType type) 
 {
@@ -60,4 +59,4 @@ void print_token_array(TokenArray * array)
     }
 }
 
-
+#endif

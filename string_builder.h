@@ -13,6 +13,8 @@
 // TODO pull these string thingies out into util.h I think...
 char * allocate_string_builder() 
 {
+    // TODO :PERF: is malloc + ensuring character after contents is \0 far quicker
+    // than using calloc
     auto start = (char *)calloc(sizeof(char) * 16 + prefix_length, sizeof(char));
     auto result = start + prefix_length;
 
@@ -22,6 +24,16 @@ char * allocate_string_builder()
     *location = 16; 
 
     return result;
+}
+
+int get_string_builder_length(char * str) {
+    auto start = str - prefix_length;
+    return (*(int *)start);
+}
+
+int get_string_builder_capacity(char * str) {
+    auto start = str - prefix_length;
+    return (*(((int *)start)+1));
 }
 
 char * free_string_builder(char * string) {
