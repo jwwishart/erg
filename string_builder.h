@@ -7,11 +7,14 @@
 #include <stdlib.h> // calloc
 #include <string.h> // strlen
 
+typedef char StringBuilder;
+
+// Capacity & Length
 #define prefix_length sizeof(int) * 2
 
 // TODO call this a string builder sort of pattern...?
 // TODO pull these string thingies out into util.h I think...
-char * allocate_string_builder() 
+StringBuilder * allocate_string_builder() 
 {
     // TODO :PERF: is malloc + ensuring character after contents is \0 far quicker
     // than using calloc
@@ -26,23 +29,24 @@ char * allocate_string_builder()
     return result;
 }
 
-int get_string_builder_length(char * str) {
-    auto start = str - prefix_length;
-    return (*(int *)start);
-}
-
-int get_string_builder_capacity(char * str) {
-    auto start = str - prefix_length;
-    return (*(((int *)start)+1));
-}
-
-char * free_string_builder(char * string) {
+char * free_string_builder(StringBuilder * string) {
     string -= prefix_length;
     free(string);
     return NULL;
 }
 
-char * append_character_array(char * str, char * append) {
+int get_string_builder_length(StringBuilder * str) {
+    auto start = str - prefix_length;
+    return (*(int *)start);
+}
+
+int get_string_builder_capacity(StringBuilder * str) {
+    auto start = str - prefix_length;
+    return (*(((int *)start)+1));
+}
+
+
+StringBuilder * append_string_buffer(StringBuilder * str, char * append) {
     auto start = str - prefix_length;
     int capacity = (*(((int *)start)+1));
     int length   = (*(int *)start);
@@ -77,7 +81,7 @@ char * append_character_array(char * str, char * append) {
 
 // Debugging Helper Function
 // Prints the capacity, length etc of a string_builder
-void dump_string_builder(char * str) {
+void dump_string_builder(StringBuilder * str) {
     auto lengthAndCap = sizeof(int) * 2;
 
     printf("Value: %s\n", str);

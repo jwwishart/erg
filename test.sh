@@ -1,0 +1,1 @@
+cd tests && sh test.sh && cd ..

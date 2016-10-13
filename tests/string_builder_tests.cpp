@@ -8,7 +8,7 @@
 int main() {
 
     // Construct a new empty string builder
-    auto str = allocate_string_builder();
+    StringBuilder *str = allocate_string_builder();
 
     expect(str != null);
     expect(get_string_builder_length(str) == 0);
@@ -17,7 +17,7 @@ int main() {
     // Append within default 16 characters buffer size: no re-allocation
     auto message_part1 = "Hello World";
 
-    str = append_character_array(str, (char *)message_part1);
+    str = append_string_buffer(str, (char *)message_part1);
     
     expect(str != null);
     expect(get_string_builder_length(str) == strlen(message_part1));
@@ -27,7 +27,7 @@ int main() {
     auto message_part2 = ". This is AMAZING!";
     auto expected_combined_length = strlen(message_part1) + strlen(message_part2);
 
-    str = append_character_array(str, (char *)message_part2);
+    str = append_string_buffer(str, (char *)message_part2);
     
     expect(str != null);
     expect(get_string_builder_length(str) == expected_combined_length);
@@ -38,14 +38,16 @@ int main() {
     auto message_part3 = ". Reallocate? no!";
     expected_combined_length += strlen(message_part3);
 
-    str = append_character_array(str, (char *)message_part3);
+    str = append_string_buffer(str, (char *)message_part3);
     
     expect(str != null);
     expect(get_string_builder_length(str) == expected_combined_length);
     expect(get_string_builder_capacity(str) == current_capacity);
 
     // Printing the reference directly
+    #ifndef SILENT
     printf("String Value Is: %s\n", str);
+    #endif
 
     // Be a good citizen and free out string builder
     str = free_string_builder(str);
