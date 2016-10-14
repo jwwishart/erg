@@ -7,6 +7,9 @@
 int main(int argc, char *argv[]) {
     auto start = std::chrono::high_resolution_clock::now();
 
+// UPTO HERE vvv
+// TODO print out all arguments to see what I need to do to find the erg file to compile
+
     CompilerArgumentFlags flags;
     parse_flags(argc, argv, &flags);
 
