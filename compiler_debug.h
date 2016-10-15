@@ -42,7 +42,7 @@ void print_token_type(TokenType type)
 
 void print_token(Token * token) 
 {
-    printf("(L%d:C%d:Len%d) > ",  token->Line, token->Column, token->Length);
+    printf("  (L%d:C%d:Len%d) > ",  token->Line, token->Column, token->Length);
     print_token_type(token->Type);
 
     if (token->Type == TOKEN_NUMBER) {

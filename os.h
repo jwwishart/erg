@@ -24,7 +24,7 @@
 
 */
 
- 
+
 #ifdef __gnu_linux__
     #define ERG_OS_NIX
 #endif
@@ -51,4 +51,32 @@ erg_getcwd(char *buffer, size_t max_length)
     #endif
 
     // TODO error situation... ?
+}
+
+extern void
+erg_printcwd() 
+{
+    char buffer[1000];
+    erg_getcwd(buffer, 1000);
+    printf("%s\n", buffer);
+}
+
+// WARNING: Caller must free the memory when you are done with it!
+extern char *
+erg_get_file_contents(const char *path) 
+{
+    // TODO(jwwishart) what if the path is a directory?
+    FILE * file;
+    file = fopen(path, "r");
+    if (file == null) return null;
+
+    fseek(file, 0L, SEEK_END);
+    int file_size = ftell(file);
+    rewind(file);
+
+    auto buffer = (char *)malloc(sizeof(char) * file_size + 1);
+    buffer[file_size] = '\0';
+    fread(buffer, sizeof(buffer), file_size, file);
+
+    return buffer;
 }

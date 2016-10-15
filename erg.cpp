@@ -7,9 +7,6 @@
 int main(int argc, char *argv[]) {
     auto start = std::chrono::high_resolution_clock::now();
 
-// UPTO HERE vvv
-// TODO print out all arguments to see what I need to do to find the erg file to compile
-
     CompilerArgumentFlags flags;
     parse_flags(argc, argv, &flags);
 
@@ -18,14 +15,26 @@ int main(int argc, char *argv[]) {
         printf("Erg Compiler v0.0.1 (c) 2016 Justin Wishart\n");
     }
 
+    // TODO should just put all this into a single function which just returns... I will
+    // do this when I dump more things I think
+    #ifdef DEBUG
+    printf("\nWARNING: erg compiler build with debugging enabled\n"); 
+    printf("\nCompiler Arguments\n");
+    for (auto i = 0; i < argc; i++) {
+        printf("  %d:%s\n", i, argv[i]);
+    }
+    printf("Compiler Arguments End\n");
+    #endif
+
     auto lexemes = lex((char *)"1 + 22 -456");
     // NEWLINES auto lexemes = lex((char *)"1 \n\r \t 2 \n 3 \r\r 4 \n\n 5 \r\r");
 
     // TODO should just put all this into a single function which just returns... I will
     // do this when I dump more things I think
     #ifdef DEBUG 
-        printf("WARNING: erg compiler build with debugging enabled\n");
+        printf("\nTokens\n");
         print_token_array(lexemes);
+        printf("Tokens End\n\n");
     #endif
 
     free(lexemes->Tokens);
