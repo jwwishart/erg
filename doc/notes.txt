@@ -1,6 +1,7 @@
 
 
 Talks
+-------------------------------------------------------------------------------
 
 Handmade Hero Chat 011 - Undefined Behavior
 https://www.youtube.com/watch?v=dyI0CwK386E
@@ -20,3 +21,82 @@ https://www.youtube.com/watch?v=-n9Fkq1e6sg&t=1s
 
 CppCon 2015: Greg Law " Give me 15 minutes & I'll change your view of GDB"
 https://www.youtube.com/watch?v=PorfLSr3DDI&t=613s
+
+
+
+Debuggers:
+-------------------------------------------------------------------------------
+
+A couple of debuggers could be used to figure out how native code debugging is done
+- https://cdbg.handmade.network/ (windows)
+- https://cxx.handmade.network/  (windows)
+
+
+Libraries
+-------------------------------------------------------------------------------
+
+
+stb - single file public comain library
+https://github.com/nothings/stb
+- image manipulation
+- font
+* leak checker
+* stretchy_buffer!
+* utf-8 file handling (windows)
+- bit operations
+- qsort
+- binary search
+* string processing
+- hashing
+* string hash table
+* file processing
+* options parsing
+* directory reading
+* checksums
+- config (stb_cfg) plain file configuration.
+- random
+* threading
+* background disk io
+* Fast malloc implementation - clone of TCMalloc (by google I think)
+* stua (a little scripting language)
+- 
+
+
+gb - single file public domain library
+https://github.com/gingerBill/gb/
+Math, vector, OpenGL helper, string, misc, regex
+gb.h has some interesting bits and pieces
+- assert with message
+- debugger breaking...
+- threading
+- custom allocators (scratch memory allocator(ring buffer) etc...)
+- character functions (lower, upper, is digit etc..)
+* utf-8
+* custom string imlementation
+- fixed capacity buffer
+* dynamic array
+* hashing etc...
+* hash Table
+* file handling
+* custom printf
+* dll handling
+* time
+- random
+- keyboard,mouse etc.. handling
+* concurrency
+- virtual memory 
+
+
+
+
+
+Other Interesting Tidbigs
+-------------------------------------------------------------------------------
+
+Immediate mode GUI framework
+https://github.com/ocornut/imgui
+Consider for when writing GUI tools
+
+
+
+

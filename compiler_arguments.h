@@ -1,13 +1,10 @@
 // Copyright (c) 2016 Justin William Wishart
 // Full License is found in the LICENSE.txt file
 
-// NOTE where a flag has a ? to the left of it that means it is not implemented
-// yet or is being considered for inclusion in the flags
+// WARNING this is VERY simple approach currently...
 
-// WARNING this is VERY simple approach currently... 
-
-// TODO should look at a library at some point?
-
+// TODO(jwwishart) loko at this for options parsing...
+// https://github.com/nothings/stb/blob/master/stb.h#L5819
 
 struct CompilerArgumentFlags {
     // Flags
