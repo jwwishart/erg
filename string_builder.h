@@ -16,15 +16,15 @@ typedef char StringBuilder;
 // TODO pull these string thingies out into util.h I think...
 StringBuilder * allocate_string_builder() 
 {
-    // TODO :PERF: is malloc + ensuring character after contents is \0 far quicker
-    // than using calloc
-    auto start = (char *)calloc(sizeof(char) * 16 + prefix_length, sizeof(char));
+    auto start = (char *)malloc(sizeof(char) * 16 + prefix_length);
     auto result = start + prefix_length;
 
     auto location = (int *)(start);
     *location = 0;
     location = (int *)(start) + 1;
-    *location = 16; 
+    *location = 16;
+
+    result[0] = '\0';
 
     return result;
 }
@@ -51,11 +51,11 @@ StringBuilder * append_string_buffer(StringBuilder * str, char * append) {
     int capacity = (*(((int *)start)+1));
     int length   = (*(int *)start);
     int append_len = strlen(append);
-    int required_capacity = length + append_len; 
+    int required_capacity = length + append_len + 1; // + 1 is null terminating character  
 
     if (required_capacity > capacity) {
         auto new_buffer_size = required_capacity * 2;
-         // TODO(jwwishart) not sure if this is ideal: new Capacity is just new capacity x 2
+        
         start = (char *)realloc(start, sizeof(char) * new_buffer_size);
         str = start + prefix_length;
 
@@ -65,6 +65,9 @@ StringBuilder * append_string_buffer(StringBuilder * str, char * append) {
 
     // TODO errors
     strcpy(str + length, append);
+
+    // Ensure char after last char is null
+    str[required_capacity] = '\0';
 
     // TODO(jwwishart) should set the next character to above a null \0 AND
     //  maybe might need to always allocate 1 extra character? to ensure it is always

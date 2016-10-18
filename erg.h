@@ -1,6 +1,7 @@
 // Copyright (c) 2016 Justin William Wishart
 // Full License is found in the LICENSE.txt file
 
+#include <chrono>   // high_resolution_clock
 #include <stdio.h>  // printf
 #include <assert.h> // assert
 #include <stdlib.h> // malloc and friends
