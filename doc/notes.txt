@@ -1,5 +1,16 @@
 
 
+Online Tools
+-------------------------------------------------------------------------------
+https://godbolt.org/
+Compiles code for various compilers into assembly
+
+Writing Compilers Tutorials etc
+-------------------------------------------------------------------------------
+
+http://hokstad.com/compiler
+Writes a compiler using Ruby :o| 45 parts at last check
+
 Talks
 -------------------------------------------------------------------------------
 
