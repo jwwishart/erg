@@ -12,6 +12,7 @@
 #
 
 echo "Running tests in $PWD"
+echo "---------------------"
 
 mkdir -p bin
 
@@ -24,4 +25,6 @@ do
     clang++ --std=c++14 -g $file -D SILENT -o bin/$filename && bin/$filename
 done
 
+echo 
+echo "---------------------"
 echo "Testing Completed"

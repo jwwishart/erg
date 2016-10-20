@@ -4,10 +4,11 @@
 // clang++ --std=c++14 -g string_builder_tests.cpp -o bin/string_builder_tests && bin/string_builder_tests
 
 #include "../erg.h"
-#include <string.h>
+#include "test.h"
 
 int main() {
-
+    print_test_heading();
+    
     // Construct a new empty string builder
     StringBuilder *str = allocate_string_builder();
 
@@ -51,6 +52,16 @@ int main() {
     expect(get_string_builder_capacity(str) == current_capacity);
     expect(str[46] == '\0');
     expect(strcmp(str, "Hello World. This is AMAZING!. Reallocate? no!") == 0);
+
+    // Append a character
+    str = append_string_buffer(str, 'Z');
+    
+    expect(str != null);
+    expect(get_string_builder_length(str) == expected_combined_length + 1);
+    expect(get_string_builder_capacity(str) == current_capacity); // Ought not change unless underlying algorithm changes;
+    expect(str[46] == 'Z');
+    expect(str[47] == '\0');
+    expect(strcmp(str, "Hello World. This is AMAZING!. Reallocate? no!Z") == 0);
 
     // Printing the reference directly
     #ifndef SILENT

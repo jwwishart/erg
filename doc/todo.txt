@@ -43,7 +43,11 @@ Full License is found in the LICENSE.txt file
     - allow this to be executed from the top directory not just tests folder?
 
 - Other
+    - Write Compiler Execution time into a file (build time for the compiler & also
+      have the compiler execution time to build erg file put into a file)
+
     - Asserts everywhere!
+    
     - Determine OS at compile time? set OS_NIX, OS_WIN, OS_MAX or others
         appropriate to the platform being compiled for (or is that a bad idea?)
 

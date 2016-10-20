@@ -45,8 +45,8 @@ int get_string_builder_capacity(StringBuilder * str) {
     return (*(((int *)start)+1));
 }
 
-
-StringBuilder * append_string_buffer(StringBuilder * str, char * append) {
+StringBuilder * append_string_buffer(StringBuilder * str, char * append) 
+{
     auto start = str - prefix_length;
     int capacity = (*(((int *)start)+1));
     int length   = (*(int *)start);
@@ -79,6 +79,16 @@ StringBuilder * append_string_buffer(StringBuilder * str, char * append) {
     *location = length;
 
     return str;
+}
+
+StringBuilder * append_string_buffer(StringBuilder * str, char c) 
+{
+    char buffer[2];
+    buffer[0] = c;
+    buffer[1] = '\0';
+
+    auto result = append_string_buffer(str, buffer);
+    return result;
 }
 
 StringBuilder * clear_string_builder(StringBuilder * str) 

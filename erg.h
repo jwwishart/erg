@@ -78,12 +78,14 @@ TokenArray *lex(char *code) {
     result->Tokens = (Token*)malloc(sizeof(Token) * 4);
 
     char *c = code;
-// TODO FIX THIS NEXT LINES ISSUES ITS UNCLEAR ETC
-    int  tokenIndex = 0; // TODO THIS IS USED FOR INDEX INTO TOKENS AND OTHHER THINGS FIX THIS!!!!!!
+    int  tokenIndex = 0; // Index into the Token Array
     int  line = 1;
     int  column = 1;
 
-    auto whitespace_builder = allocate_string_builder();
+    // TODO(jwwishart) this ought to be added to for all whitespace and 
+    //  pointer assigned to token->PrefixedWhitespace before adding a usefull, non-whitespace
+    //  token
+    auto whitespace = allocate_string_builder();
 
     // TODO check and re-adjust capacity
     // TODO track lines and columns and index and length?
