@@ -57,6 +57,18 @@ int main() {
     printf("String Value Is: %s\n", str);
     #endif
 
+    // Ensure we can clear the StringBuilder, retains capacity
+    str = clear_string_builder(str);
+    expect(str != null);
+    expect(get_string_builder_length(str) == 0);
+    expect(get_string_builder_capacity(str) == current_capacity);
+    expect(str[0] == '\0');
+
+    // Printing the reference directly
+    #ifndef SILENT
+    printf("String Value Is: %s\n", str);
+    #endif
+
     // Be a good citizen and free out string builder
     str = free_string_builder(str);
 }

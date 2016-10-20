@@ -81,6 +81,14 @@ StringBuilder * append_string_buffer(StringBuilder * str, char * append) {
     return str;
 }
 
+StringBuilder * clear_string_builder(StringBuilder * str) 
+{
+    auto start = str - prefix_length;
+    auto location = (int *)(start);
+    *location = 0;
+    str[0] = '\0';
+    return str;
+}
 
 // Debugging Helper Function
 // Prints the capacity, length etc of a string_builder

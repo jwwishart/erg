@@ -83,6 +83,8 @@ TokenArray *lex(char *code) {
     int  line = 1;
     int  column = 1;
 
+    auto whitespace_builder = allocate_string_builder();
+
     // TODO check and re-adjust capacity
     // TODO track lines and columns and index and length?
     while (*c != '\0') {
