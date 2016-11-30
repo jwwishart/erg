@@ -6,6 +6,7 @@
 
 #include <stdlib.h> // calloc
 #include <string.h> // strlen
+#include <stdio.h>  // printf
 
 typedef char StringBuilder;
 

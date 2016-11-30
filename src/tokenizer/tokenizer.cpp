@@ -1,64 +1,18 @@
-// Copyright (c) 2016 Justin William Wishart
-// Full License is found in the LICENSE.txt file
+#ifndef TOKENIZER_CPP
+#define TOKENIZER_CPP
 
-#include <chrono>   // high_resolution_clock
-#include <stdio.h>  // printf
-#include <assert.h> // assert
-#include <stdlib.h> // malloc and friends
-#include <string.h> // strlen, strcpy
+#include <stdlib.h>
+#include <assert.h>
 
-#include "util.h"
-#include "os.h"
-#include "compiler_arguments.h"
-#include "string_builder.h"
+#include "tokenizer.h"
+#include "../misc/string_builder.h"
 
-enum TokenType 
-{
-    TOKEN_UNKNOWN,
-
-    TOKEN_WHITESPACE,
-    TOKEN_NEWLINE,
-
-    TOKEN_NUMBER,
-
-    TOKEN_OPERATOR_ADD,
-    TOKEN_OPERATOR_SUBTRACT,
-    TOKEN_OPERATOR_MULTIPLY,
-    TOKEN_OPERATOR_DIVIDE,
-};
-
-struct Token 
-{
-    TokenType Type;
-
-    // Location Metadata
-    int Index;
-    int Line;
-    int Column;
-    int Length;
-
-    char * Raw;
-    char * PrefixedWhitespace;
-    char * SuffixedWhitespace;
-};
-
-// TODO create macro for creation of arrays for given types which have the 
-// ensure_token_array_size() or Ensure***ArraySize() 
-struct TokenArray 
-{
-    int    Length;
-    int    Capacity;
-
-    Token *Tokens;
-};
-
-#ifdef DEBUG 
-    #include "compiler_debug.h"
-#endif
 
 // TODO cleanup
 // TODO extra checks
-void ensure_token_array_size(TokenArray *array) {
+// TODO(jwwishart): not available externally?
+void 
+ensure_token_array_size(TokenArray *array) {
     if (array->Length >= array->Capacity) {
         auto currentCapacity = array->Capacity;
         auto newCapacity     = array->Capacity * 2;
@@ -68,6 +22,11 @@ void ensure_token_array_size(TokenArray *array) {
         array->Capacity = newCapacity;
     }
 }
+
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 TokenArray *lex(char *code) {
     assert(code != NULL);
@@ -228,68 +187,8 @@ TokenArray *lex(char *code) {
     return result;
 }
 
-
-/*
-    Compiler Execution Duration Printing Functionality
-*/
-
-#include <chrono>
-typedef std::chrono::system_clock::time_point TimePoint;
-
-TimePoint timer_now() 
-{
-    return std::chrono::high_resolution_clock::now();
+#ifdef __cplusplus
 }
+#endif
 
-void print_compiler_execution_time(TimePoint start, TimePoint end) 
-{
-    auto total = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-
-    auto microseconds = total % 1000;
-    total /= 1000;
-
-    auto milliseconds = total % 1000;
-    total /= 1000;
-
-    auto seconds = total % 60;
-    total /= 60;
-
-    auto minutes = total % 60;
-    total /= 60;
-
-    auto hours = total % 24;
-    total /= 24;
-
-    auto days = total;
-
-    if (days >= 1) {
-        printf("%ld day", days);
-        if (days > 1) printf("s");
-        printf(" ");
-    }
-    if (hours >= 1) {
-        printf("%ld hour", hours);
-        if (hours > 1) printf("s");
-        printf(" ");
-    }
-    if (minutes >= 1) {
-        printf("%ld minute", minutes);
-        if (minutes > 1) printf("s");
-        printf(" ");
-    }
-    if (seconds >= 1) {
-        printf("%ld second", seconds);
-        if (seconds > 1) printf("s");
-        printf(" ");
-    }
-    if (milliseconds >= 1) {
-        printf("%ld millisecond", milliseconds);
-        if (milliseconds > 1) printf("s");
-        printf(" ");
-    }
-    if (microseconds >= 1) {
-        printf("%ld microsecond", microseconds);
-        if (microseconds > 1) printf("s");
-    }
-}
-
+#endif /* TOKENIZER_CPP */

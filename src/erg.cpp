@@ -1,7 +1,17 @@
 // Copyright (c) 2016 Justin William Wishart
 // Full License is found in the LICENSE.txt file
 
-#include "erg.h"
+#include <chrono>   // high_resolution_clock
+#include <stdio.h>  // printf
+#include <stdlib.h> // malloc/free
+
+#include "compiler/compiler_arguments.h"
+#include "compiler/timing.h"
+#include "tokenizer/tokenizer.h"
+
+#ifdef DEBUG
+#include "debug/compiler_debug.h"
+#endif // DEBUG
 
 int main(int argc, char *argv[]) {
     auto start = std::chrono::high_resolution_clock::now();

@@ -1,7 +1,17 @@
 // Copyright (c) 2016 Justin William Wishart
 // Full License is found in the LICENSE.txt file
 
+#ifndef COMPILER_DEBUG_H
+#define COMPILER_DEBUG_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 #ifdef DEBUG
+
+#include "../tokenizer/tokenizer.h"
 
 void print_token_type(TokenType type) 
 {
@@ -59,4 +69,12 @@ void print_token_array(TokenArray * array)
     }
 }
 
+#endif // DEBUG
+
+
+#ifdef __cplusplus
+}
 #endif
+
+#endif /* COMPILER_DEBUG_H */
+

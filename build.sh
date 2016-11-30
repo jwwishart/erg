@@ -1,1 +1,1 @@
-clang++ --std=c++14 -g -D DEBUG erg.cpp -o bin/erg
+clang++ --std=c++14 -g -D DEBUG src/erg.cpp src/compiler/timing.cpp src/tokenizer/tokenizer.cpp -o bin/erg

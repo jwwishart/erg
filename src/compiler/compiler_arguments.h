@@ -1,6 +1,14 @@
 // Copyright (c) 2016 Justin William Wishart
 // Full License is found in the LICENSE.txt file
 
+#ifndef COMPILER_ARGUMENTS_H
+#define COMPILER_ARGUMENTS_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 // WARNING this is VERY simple approach currently...
 
 // TODO(jwwishart) loko at this for options parsing...
@@ -58,3 +66,10 @@ void parse_flags(int argc, char *argv[], CompilerArgumentFlags* flags) {
     flags->runCompilerTests = is_flag_set(argc, argv, "--run-compiler-tests");
     #endif
 }
+
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* COMPILER_ARGUMENTS_H */
